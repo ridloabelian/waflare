@@ -1,0 +1,437 @@
+export function renderDashboardHtml(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Waflare — Unified Cloudflare × WhatsApp OS (27-in-1)</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b101b;
+      --panel: #121a2b;
+      --panel-2: #182338;
+      --border: #263552;
+      --text: #e6edf7;
+      --muted: #8ea2c2;
+      --cf: #f38020;
+      --wa: #25d366;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --info: #38bdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top right, #182338 0%, var(--bg) 55%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      line-height: 1.45;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 16, 27, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--cf), var(--wa));
+      display: grid; place-items: center; font-weight: 800; color: #0b101b;
+    }
+    .brand h1 { margin: 0; font-size: 18px; }
+    .brand p { margin: 0; font-size: 12px; color: var(--muted); }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .badge {
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--panel);
+      color: var(--text); text-decoration: none;
+    }
+    .badge.wa { border-color: rgba(37, 211, 102, 0.45); color: var(--wa); }
+    .badge.cf { border-color: rgba(243, 128, 32, 0.45); color: var(--cf); }
+    nav.tabs {
+      display: flex; gap: 8px; padding: 14px 24px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border); background: var(--panel);
+    }
+    .tab-btn {
+      background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(243,128,32,0.22), rgba(37,211,102,0.18));
+      color: var(--text); border-color: var(--cf);
+    }
+    main { max-width: 1320px; margin: 0 auto; padding: 22px 24px 56px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px;
+    }
+    .card h2, .card h3 { margin: 0 0 10px; font-size: 15px; }
+    .kpi { font-size: 28px; font-weight: 800; color: var(--wa); }
+    .muted { color: var(--muted); font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    a { color: var(--info); }
+    .pill {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+      border: 1px solid var(--border); background: var(--panel-2); margin: 2px 4px 2px 0;
+    }
+    .pill.ok { border-color: rgba(37,211,102,0.5); color: var(--wa); }
+    .pill.warn { border-color: rgba(245,158,11,0.5); color: var(--warn); }
+    .pill.bad { border-color: rgba(239,68,68,0.5); color: var(--danger); }
+    input, select, textarea {
+      width: 100%; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px;
+      font-family: inherit; font-size: 13px;
+    }
+    button.action {
+      background: linear-gradient(135deg, var(--cf), #e26410);
+      color: #fff; border: 0; border-radius: 8px; padding: 9px 14px;
+      font-weight: 700; cursor: pointer; font-size: 13px;
+    }
+    button.action.wa { background: linear-gradient(135deg, var(--wa), #17a84d); color: #05130a; }
+    button.action.sec { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    pre {
+      background: #070b13; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px; overflow: auto; font-size: 12px; max-height: 360px; white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">W⚡</div>
+      <div>
+        <h1>Waflare Command Center</h1>
+        <p>27 Cloudflare × WhatsApp GitHub Projects Unified Into One Serverless Edge OS</p>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge wa" id="healthBadge">Edge Runtime: Active</span>
+      <span class="badge cf" id="mcpModeBadge">MCP: Checking...</span>
+      <a class="badge" href="/glasses" target="_blank">Smart-Glasses HUD ↗</a>
+      <a class="badge" href="/api/curation" target="_blank">JSON Catalog ↗</a>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="overview">1. 27-Repo Curation Matrix</button>
+    <button class="tab-btn" data-tab="crm">2. CRM &amp; 24h Inbox</button>
+    <button class="tab-btn" data-tab="playground">3. Agent &amp; Slash Lab</button>
+    <button class="tab-btn" data-tab="mcp">4. MCP Studio (28 Tools)</button>
+    <button class="tab-btn" data-tab="ops">5. CF Ops &amp; AI Traffic Radar</button>
+    <button class="tab-btn" data-tab="plexi">6. Plexi E2EE Auditor</button>
+  </nav>
+
+  <main>
+    <!-- Tab 1 -->
+    <section class="tab-panel active" id="tab-overview">
+      <div class="grid" style="margin-bottom:16px">
+        <div class="card"><div class="muted">Curated Source Projects</div><div class="kpi" id="kpiProjects">27</div><div class="muted">Sorted by GitHub Stars (421★ → 3★)</div></div>
+        <div class="card"><div class="muted">MCP JSON-RPC Tools</div><div class="kpi">28</div><div class="muted">8 Modules + Read-Only Lock</div></div>
+        <div class="card"><div class="muted">CRM Leads &amp; Threads</div><div class="kpi" id="kpiLeads">-</div><div class="muted">24h Meta Window + CTWA Attribution</div></div>
+        <div class="card"><div class="muted">AI Usage Cost (Micro-USD)</div><div class="kpi" id="kpiSpend">$0.00</div><div class="muted">$0 while idle · Failover Router</div></div>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between;margin-bottom:10px">
+          <h2>All 27 Curated Cloudflare × WhatsApp Repositories</h2>
+          <select id="pillarFilter" style="width:auto;min-width:260px">
+            <option value="">All 8 Architectural Pillars</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Repository</th><th>Stars</th><th>Pillar</th><th>Waflare Module</th><th>Merged Capabilities</th></tr>
+            </thead>
+            <tbody id="curationTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2 -->
+    <section class="tab-panel" id="tab-crm">
+      <div class="grid" style="margin-bottom:16px">
+        <div class="card">
+          <h3>Shared Team Inbox &amp; 24h Window Status</h3>
+          <div id="crmLeadsList" class="muted">Loading...</div>
+          <div style="margin-top:12px" class="row">
+            <button class="action sec" onclick="refreshAll()">Refresh CRM</button>
+            <button class="action wa" onclick="runBroadcastDemo()">Plan Paced Broadcast (STOP-Safe)</button>
+          </div>
+          <pre id="crmActionOut" style="margin-top:10px">Ready.</pre>
+        </div>
+        <div class="card">
+          <h3>Recent Messages &amp; AES-256-GCM Encrypted Vault</h3>
+          <div id="crmMessagesList" class="muted">Loading...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3 -->
+    <section class="tab-panel" id="tab-playground">
+      <div class="grid">
+        <div class="card">
+          <h3>Simulate Inbound WhatsApp / Omnichannel Message</h3>
+          <div style="display:grid;gap:10px">
+            <div class="row">
+              <input id="simPhone" value="6281234567890" placeholder="Sender Phone" style="flex:1" />
+              <select id="simKind" style="width:150px">
+                <option value="text">Text</option>
+                <option value="audio">Voice Note (STT)</option>
+              </select>
+            </div>
+            <textarea id="simText" rows="3">/sql SELECT sku, title, price_usd FROM catalog WHERE category = 'book' ORDER BY rating DESC</textarea>
+            <div class="row">
+              <button class="action wa" onclick="sendSim()">Send to Orchestrator</button>
+              <button class="action sec" onclick="setSim('/rag vectorize whatsapp durable objects')">/rag</button>
+              <button class="action sec" onclick="setSim('/verify Cloudflare operates Plexi for WhatsApp key transparency')">/verify</button>
+              <button class="action sec" onclick="setSim('/fitness ran 6.5km in 38 min and ate 550 kcal')">/fitness</button>
+              <button class="action sec" onclick="setSim('/fx 29 USD IDR')">/fx</button>
+              <button class="action sec" onclick="setSim('/ops cache.purge https://ridlo.id/*')">/ops</button>
+              <button class="action sec" onclick="setSim('/audit-e2ee')">/audit-e2ee</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Orchestrator Response + Smart-Glasses Card</h3>
+          <pre id="simOut">Run any command or natural-language sales/support prompt...</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4 -->
+    <section class="tab-panel" id="tab-mcp">
+      <div class="grid">
+        <div class="card">
+          <h3>Live MCP JSON-RPC 2.0 Caller (<code>POST /mcp</code>)</h3>
+          <div style="display:grid;gap:10px">
+            <select id="mcpToolSelect"></select>
+            <textarea id="mcpArgsInput" rows="4">{}</textarea>
+            <div class="row">
+              <button class="action" onclick="callMcpTool()">Execute MCP tools/call</button>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px">
+                <input type="checkbox" id="mcpReadOnlySim" style="width:auto" /> Simulate <code>MCP_READ_ONLY=true</code>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>MCP JSON-RPC Response</h3>
+          <pre id="mcpOut">Select any of the 28 MCP tools and execute...</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5 -->
+    <section class="tab-panel" id="tab-ops">
+      <div class="grid">
+        <div class="card">
+          <h3>Approval-Gated Cloudflare Ops Queue</h3>
+          <div class="row" style="margin-bottom:10px">
+            <button class="action" onclick="requestDemoOp()">Request Cache Purge Op</button>
+            <button class="action sec" onclick="refreshAll()">Refresh Queue</button>
+          </div>
+          <div id="opsList" class="muted">No operations yet.</div>
+        </div>
+        <div class="card">
+          <h3>AI Traffic Radar (Referrals vs Crawlers)</h3>
+          <div class="row" style="margin-bottom:10px">
+            <button class="action wa" onclick="simTraffic('https://chatgpt.com/', 'Mozilla/5.0')">Simulate ChatGPT Referral</button>
+            <button class="action sec" onclick="simTraffic('', 'GPTBot/1.0')">Simulate GPTBot Crawler</button>
+          </div>
+          <pre id="trafficOut">No AI traffic events simulated yet.</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 6 -->
+    <section class="tab-panel" id="tab-plexi">
+      <div class="card">
+        <h3>Cloudflare Plexi WhatsApp E2EE Key Transparency Auditor</h3>
+        <p class="muted">Queries <code>plexi.key-transparency.cloudflare.com/namespaces/whatsapp.key-transparency.v1</code> and validates the epoch + SHA-256 Merkle root format.</p>
+        <button class="action wa" onclick="runPlexiAudit()">Run Key Transparency Audit</button>
+        <pre id="plexiOut" style="margin-top:12px">Click the button above to inspect the WhatsApp Key Transparency directory.</pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    let curatedData = [];
+    let mcpToolsList = [];
+
+    function setSim(txt) {
+      document.getElementById('simText').value = txt;
+    }
+
+    async function refreshAll() {
+      const [health, curation, crm, ops] = await Promise.all([
+        fetch('/health').then(r => r.json()),
+        fetch('/api/curation').then(r => r.json()),
+        fetch('/api/crm/overview').then(r => r.json()),
+        fetch('/api/ops/list').then(r => r.json())
+      ]);
+
+      document.getElementById('mcpModeBadge').textContent = 'MCP: ' + (health.mcpReadOnly ? 'READ-ONLY' : 'READ-WRITE');
+      document.getElementById('kpiProjects').textContent = curation.total;
+      document.getElementById('kpiLeads').textContent = crm.leads.length;
+      document.getElementById('kpiSpend').textContent = '$' + crm.usage.totalUsd;
+
+      curatedData = curation.projects;
+      const filterEl = document.getElementById('pillarFilter');
+      if (filterEl.options.length === 1) {
+        const pillars = [...new Set(curatedData.map(p => p.pillar))];
+        pillars.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p; opt.textContent = p;
+          filterEl.appendChild(opt);
+        });
+        filterEl.addEventListener('change', renderCurationTable);
+      }
+      renderCurationTable();
+
+      document.getElementById('crmLeadsList').innerHTML = crm.leads.map(l => {
+        const winBadge = l.window.within24h
+          ? '<span class="pill ok">24h Open (' + l.window.hoursRemaining + 'h left)</span>'
+          : '<span class="pill bad">24h Expired (HSM Only)</span>';
+        const optBadge = l.optedOut ? '<span class="pill bad">OPTED OUT</span>' : '';
+        const ctwa = l.ctwaReferral ? '<span class="pill warn">CTWA: ' + l.ctwaReferral.sourceId + '</span>' : '';
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><strong>' + l.name + '</strong> (' + l.phone + ') · Stage: <span class="pill">' + l.stage + '</span> · Score: <strong>' + l.leadScore + '</strong><br/>' + winBadge + optBadge + ctwa + '</div>';
+      }).join('');
+
+      document.getElementById('crmMessagesList').innerHTML = crm.recentMessages.map(m =>
+        '<div style="padding:8px 0;border-bottom:1px solid var(--border)"><span class="pill">' + m.direction + ' · ' + m.channel + '</span>' +
+        (m.encryptedPayload ? '<span class="pill ok">AES-256-GCM</span>' : '') +
+        '<div>' + m.body.replace(/</g, '&lt;') + '</div></div>'
+      ).join('');
+
+      const opsEl = document.getElementById('opsList');
+      if (!ops.operations.length) {
+        opsEl.innerHTML = 'No operations queued.';
+      } else {
+        opsEl.innerHTML = ops.operations.map(o =>
+          '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><strong>' + o.id + '</strong> · ' + o.action + ' → <code>' + o.target + '</code> · <span class="pill">' + o.status + '</span>' +
+          (o.status === 'pending' ? ' <button class="action wa" style="padding:4px 8px" onclick="resolveOp(\\'' + o.id + '\\', \\'approve\\')">Approve</button> <button class="action sec" style="padding:4px 8px" onclick="resolveOp(\\'' + o.id + '\\', \\'reject\\')">Reject</button>' : '') +
+          '<div class="muted">' + (o.resultSummary || '') + '</div></div>'
+        ).join('');
+      }
+
+      if (!mcpToolsList.length) {
+        const mcpRes = await fetch('/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+        }).then(r => r.json());
+        mcpToolsList = mcpRes.result?.tools || [];
+        const sel = document.getElementById('mcpToolSelect');
+        sel.innerHTML = mcpToolsList.map(t => '<option value="' + t.name + '">' + t.name + ' (' + t.annotations.module + (t.annotations.readOnlyHint ? ' · RO' : ' · RW') + ')</option>').join('');
+      }
+    }
+
+    function renderCurationTable() {
+      const f = document.getElementById('pillarFilter').value;
+      const rows = curatedData.filter(p => !f || p.pillar === f);
+      document.getElementById('curationTable').innerHTML = rows.map(p =>
+        '<tr><td>' + p.rank + '</td><td><a href="' + p.url + '" target="_blank"><strong>' + p.fullName + '</strong></a><div class="muted">' + p.license + '</div></td><td>★ ' + p.stars + '</td><td>' + p.pillar + '</td><td><code>' + p.waflareModule + '</code></td><td>' + p.capabilitiesMerged.map(c => '<span class="pill">' + c + '</span>').join('') + '</td></tr>'
+      ).join('');
+    }
+
+    async function sendSim() {
+      const res = await fetch('/api/agent/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: document.getElementById('simPhone').value.trim(),
+          kind: document.getElementById('simKind').value,
+          text: document.getElementById('simText').value
+        })
+      }).then(r => r.json());
+      document.getElementById('simOut').textContent = JSON.stringify(res, null, 2);
+      refreshAll();
+    }
+
+    async function runBroadcastDemo() {
+      const res = await fetch('/api/crm/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateName: 'reopen_support_window' })
+      }).then(r => r.json());
+      document.getElementById('crmActionOut').textContent = JSON.stringify(res, null, 2);
+    }
+
+    async function callMcpTool() {
+      const name = document.getElementById('mcpToolSelect').value;
+      let args = {};
+      try { args = JSON.parse(document.getElementById('mcpArgsInput').value || '{}'); } catch {}
+      const ro = document.getElementById('mcpReadOnlySim').checked;
+      const res = await fetch('/mcp' + (ro ? '?readonly=true' : ''), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method: 'tools/call', params: { name, arguments: args } })
+      }).then(r => r.json());
+      document.getElementById('mcpOut').textContent = JSON.stringify(res, null, 2);
+      refreshAll();
+    }
+
+    async function requestDemoOp() {
+      await fetch('/api/ops/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'cache.purge', target: 'https://waflare.workers.dev/*', requestedBy: 'admin-ui' })
+      });
+      refreshAll();
+    }
+
+    async function resolveOp(opId, decision) {
+      await fetch('/api/ops/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ opId, decision, actor: 'admin-ui' })
+      });
+      refreshAll();
+    }
+
+    async function simTraffic(referer, ua) {
+      const res = await fetch('/api/traffic/inspect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: '/pricing', referer, userAgent: ua, alertMode: 'both' })
+      }).then(r => r.json());
+      document.getElementById('trafficOut').textContent = JSON.stringify(res, null, 2);
+    }
+
+    async function runPlexiAudit() {
+      const res = await fetch('/api/security/key-transparency').then(r => r.json());
+      document.getElementById('plexiOut').textContent = JSON.stringify(res, null, 2);
+    }
+
+    refreshAll();
+  </script>
+</body>
+</html>`;
+}

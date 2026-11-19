@@ -1,0 +1,32 @@
+{
+  "name": "waflare",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "All-in-one Cloudflare Workers & WhatsApp OS unifying 27 open-source patterns: Dual-Mode MCP Server (28 tools), Self-Hosted CRM & 24h Inbox, Omnichannel AI Agent, SQL/RAG, Whisper/TTS Voice, Approval-Gated Cloudflare Ops & Plexi E2EE Key Transparency.",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "start": "node --experimental-strip-types scripts/dev-server.ts",
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy",
+    "db:migrate": "npx wrangler d1 migrations apply waflare-db --local"
+  },
+  "keywords": [
+    "cloudflare",
+    "cloudflare-workers",
+    "durable-objects",
+    "cloudflare-d1",
+    "workers-ai",
+    "whatsapp",
+    "whatsapp-cloud-api",
+    "whatsapp-mcp",
+    "mcp-server",
+    "whatsapp-crm",
+    "ai-agent",
+    "key-transparency"
+  ],
+  "author": "Ridlo Abelian",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.6.0"
+  }
+}

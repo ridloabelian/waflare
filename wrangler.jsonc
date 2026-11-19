@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "waflare",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "MCP_READ_ONLY": "false",
+    "ALERT_ON": "referrals",
+    "DEFAULT_TIMEZONE": "Asia/Jakarta",
+    "USER_BUDGET_MICRO_USD": "5000000",
+    "PLEXI_URL": "https://plexi.key-transparency.cloudflare.com"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SESSION_DO",
+        "class_name": "ConversationSessionDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["ConversationSessionDO"]
+    }
+  ],
+  "triggers": {
+    "crons": ["*/15 * * * *"]
+  }
+  // Optional Cloudflare bindings (uncomment after running wrangler create commands):
+  // "d1_databases": [{ "binding": "DB", "database_name": "waflare-db", "database_id": "<YOUR_D1_ID>" }],
+  // "kv_namespaces": [{ "binding": "WAFLARE_KV", "id": "<YOUR_KV_ID>" }],
+  // "r2_buckets": [{ "binding": "MEDIA_BUCKET", "bucket_name": "waflare-media" }],
+  // "ai": { "binding": "AI" }
+}
