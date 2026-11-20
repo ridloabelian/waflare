@@ -16,6 +16,25 @@ import { ConversationSessionDO } from "./durable/sessionDO.ts";
 
 export { ConversationSessionDO };
 
+const MCP_CORS_HEADERS: Record<string, string> = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, DELETE, OPTIONS",
+  "access-control-allow-headers": "Content-Type, Authorization, Mcp-Session-Id, Mcp-Protocol-Version"
+};
+
+/** Attach CORS headers required by Streamable HTTP MCP clients and inspectors. */
+function withMcpCors(response: Response): Response {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(MCP_CORS_HEADERS)) {
+    headers.set(key, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 export interface WaflareApp {
   store: WaflareStore;
   fetch(request: Request, env?: Env): Promise<Response>;
@@ -67,6 +86,13 @@ export function createWaflareApp(initialStore?: WaflareStore): WaflareApp {
         });
       }
 
+      if (request.method === "GET" && path === "/ping") {
+        return new Response("pong", {
+          status: 200,
+          headers: { "content-type": "text/plain; charset=utf-8" }
+        });
+      }
+
       if (request.method === "GET" && path === "/api/curation") {
         const pillar = url.searchParams.get("pillar");
         const projects = pillar
@@ -76,10 +102,14 @@ export function createWaflareApp(initialStore?: WaflareStore): WaflareApp {
       }
 
       // 3. Streamable HTTP MCP Server (/mcp)
+      if ((request.method === "OPTIONS" || request.method === "DELETE") && path === "/mcp") {
+        return new Response(null, { status: 204, headers: MCP_CORS_HEADERS });
+      }
+
       if (request.method === "POST" && path === "/mcp") {
         const roOverride = url.searchParams.get("readonly");
         const effectiveEnv: Env = roOverride === "true" ? { ...env, MCP_READ_ONLY: "true" } : env;
-        return handleMcpRequest(request, runtime, effectiveEnv);
+        return withMcpCors(await handleMcpRequest(request, runtime, effectiveEnv));
       }
 
       // 4. Meta WhatsApp Cloud API Webhook (GET verify + POST signed events)

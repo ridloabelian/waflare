@@ -116,6 +116,22 @@ export async function handleMcpRequest(
     }
   }
 
+  if (typeof body.method === "string" && body.method.startsWith("notifications/")) {
+    return new Response(null, { status: 202 });
+  }
+
+  if (body.method === "resources/list") {
+    return Response.json({ jsonrpc: "2.0", id, result: { resources: [] } });
+  }
+
+  if (body.method === "resources/templates/list") {
+    return Response.json({ jsonrpc: "2.0", id, result: { resourceTemplates: [] } });
+  }
+
+  if (body.method === "prompts/list") {
+    return Response.json({ jsonrpc: "2.0", id, result: { prompts: [] } });
+  }
+
   return Response.json(
     { jsonrpc: "2.0", id, error: { code: -32601, message: `Method not found: ${body.method}` } },
     { status: 404 }

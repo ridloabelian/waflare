@@ -88,6 +88,59 @@ test("MCP Streamable HTTP server lists all 28 tools and enforces finereli MCP_RE
   assert.equal(allowedSearch.status, 200);
   const searchJson = (await allowedSearch.json()) as { result: { structuredContent: { results: unknown[] } } };
   assert.ok(searchJson.result.structuredContent.results.length >= 1);
+
+  const pingRes = await app.fetch(new Request("https://waflare.workers.dev/ping"));
+  assert.equal(pingRes.status, 200);
+  assert.equal(await pingRes.text(), "pong");
+
+  const optionsRes = await app.fetch(
+    new Request("https://waflare.workers.dev/mcp", { method: "OPTIONS" })
+  );
+  assert.equal(optionsRes.status, 204);
+  assert.equal(optionsRes.headers.get("access-control-allow-origin"), "*");
+
+  const notifRes = await app.fetch(
+    new Request("https://waflare.workers.dev/mcp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })
+    })
+  );
+  assert.equal(notifRes.status, 202);
+  assert.equal(notifRes.headers.get("access-control-allow-origin"), "*");
+
+  const resourcesRes = await app.fetch(
+    new Request("https://waflare.workers.dev/mcp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 5, method: "resources/list" })
+    })
+  );
+  assert.equal(resourcesRes.status, 200);
+  const resourcesJson = (await resourcesRes.json()) as { result: { resources: unknown[] } };
+  assert.deepEqual(resourcesJson.result.resources, []);
+
+  const templatesRes = await app.fetch(
+    new Request("https://waflare.workers.dev/mcp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 6, method: "resources/templates/list" })
+    })
+  );
+  assert.equal(templatesRes.status, 200);
+  const templatesJson = (await templatesRes.json()) as { result: { resourceTemplates: unknown[] } };
+  assert.deepEqual(templatesJson.result.resourceTemplates, []);
+
+  const promptsRes = await app.fetch(
+    new Request("https://waflare.workers.dev/mcp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 7, method: "prompts/list" })
+    })
+  );
+  assert.equal(promptsRes.status, 200);
+  const promptsJson = (await promptsRes.json()) as { result: { prompts: unknown[] } };
+  assert.deepEqual(promptsJson.result.prompts, []);
 });
 
 test("End-to-end WhatsApp webhook + approval-gated Cloudflare Ops + AI traffic radar + DO isolation", async () => {

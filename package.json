@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "start": "node --experimental-strip-types scripts/dev-server.ts",
+    "mcp:stdio": "node --experimental-strip-types scripts/mcp-stdio.ts",
     "dev": "npx wrangler dev",
     "deploy": "npx wrangler deploy",
     "db:migrate": "npx wrangler d1 migrations apply waflare-db --local"

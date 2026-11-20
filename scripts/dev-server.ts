@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { createWaflareApp } from "../src/index.ts";
 import type { Env } from "../src/types.ts";
 
+const HOST = process.env.HOST ?? "127.0.0.1";
 const PORT = Number(process.env.PORT ?? "8787");
 const app = createWaflareApp();
 
@@ -27,7 +28,13 @@ const server = createServer(async (req, res) => {
       chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
     }
     const rawBody = Buffer.concat(chunks);
-    const reqUrl = `http://127.0.0.1:${PORT}${req.url ?? "/"}`;
+    const reqHost = req.headers.host ?? `${HOST}:${PORT}`;
+    let reqUrl: string;
+    try {
+      reqUrl = new URL(req.url ?? "/", `http://${reqHost}`).toString();
+    } catch {
+      reqUrl = `http://127.0.0.1:${PORT}${req.url ?? "/"}`;
+    }
 
     const headers = new Headers();
     for (const [k, v] of Object.entries(req.headers)) {
@@ -56,8 +63,8 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, "127.0.0.1", () => {
-  console.log(`Waflare local edge server listening at http://127.0.0.1:${PORT}/admin`);
-  console.log(`MCP endpoint ready at http://127.0.0.1:${PORT}/mcp`);
-  console.log(`Smart-Glasses HUD ready at http://127.0.0.1:${PORT}/glasses`);
+server.listen(PORT, HOST, () => {
+  console.log(`Waflare local edge server listening at http://${HOST}:${PORT}/admin`);
+  console.log(`MCP endpoint ready at http://${HOST}:${PORT}/mcp`);
+  console.log(`Smart-Glasses HUD ready at http://${HOST}:${PORT}/glasses`);
 });
