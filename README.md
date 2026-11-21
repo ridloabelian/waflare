@@ -4,8 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Runtime: Cloudflare Workers & Node 22](https://img.shields.io/badge/Runtime-Cloudflare_Workers_%7C_Node_22-f38020.svg)](https://workers.cloudflare.com/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero_Runtime_Deps-25d366.svg)](#quickstart)
+[![Architecture Hub](https://img.shields.io/badge/Live_Hub-ridlo.id%2Fwaflare-10b981.svg)](https://ridlo.id/waflare)
 
 > **27 open-source Cloudflare & WhatsApp repositories curated, de-duplicated, and synthesized into one clean-room, MIT-licensed, zero-dependency Cloudflare Worker + Durable Object + D1 + MCP + Web Command Center.**
+>
+> **Interactive Architecture Hub & 28-Tool MCP Studio:** [https://ridlo.id/waflare](https://ridlo.id/waflare) · **AI / LLM Raw Spec:** [https://ridlo.id/waflare.md](https://ridlo.id/waflare.md)
 
 Instead of gluing together separate bots for WhatsApp webhooks, MCP servers, CRM inboxes, Whisper voice transcription, AI failover, Cloudflare ChatOps, and E2EE Key Transparency auditing, **`waflare`** runs every capability inside **one unified edge worker** that deploys to Cloudflare Workers **and** runs natively on local Node.js 22+ (`--experimental-strip-types`) with zero build steps.
 
